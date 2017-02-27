@@ -8,10 +8,12 @@
 				"responses": [{
 						"status": 200, // 200 by default
 						"times": 5, // 1 by default
+						"sleep": 500, // minimum time to respond : 100ms by default
 						"output": "user1", // chosen output
 					}, {
 						"status": 404,
 						"times": 1, // < 1 means forever at the end of previous responses (sorted mode only)
+						"sleep": 200,
 						"output": "User not found"
 					}
 				]
@@ -29,6 +31,7 @@
 								"date" : ["2017-01-01", "2017-01-02"]
 							}
 						],
+						"sleep": 200,
 						"output": "Admin Profil",
 					}, {
 						"status": 200,
@@ -36,10 +39,12 @@
 								"title": ["profile1", "profile2"]
 							},
 						],
+						"sleep": 200,
 						"output": "Profile found #title#", // write given param
 					}, {
 						"status": 404, 
 						"default": true, // means other cases when none match
+						"sleep": 200,
 						"output": "Profile not found!",
 					}
 				]
