@@ -1,0 +1,18 @@
+{
+	"mock-http": [{
+			"repeat": true,
+			"input": "/test/service",
+			"output": {
+				"mode": "SORTED",
+				"content-type": "text/html",
+				"responses": [{
+						"status": 200,
+						"times": 1,
+						"sleep": 0,
+						"output": "OK"
+					}
+				]
+			}
+		}
+	]
+}

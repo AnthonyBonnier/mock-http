@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
  * Created by abonnier on 27/02/2017.
  */
 @RestController
-public class MockRouteManager {
+public class RouteManager {
 
     @GetMapping(value = "/**")
     public String handleRequest(HttpServletRequest request) {

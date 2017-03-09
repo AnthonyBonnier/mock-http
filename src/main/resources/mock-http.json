@@ -1,0 +1,48 @@
+{
+	"mock-http": [{
+			"repeat": true,
+			"input": "/cgi-bin/cgi.elf?22000?",
+			"output": {
+				"mode": "sorted",
+				"content-type": "text/html",
+				"responses": [{
+						"status": 200,
+						"times": 2,
+						"sleep": 500,
+						"output": "22000"
+					},
+					{
+						"status": 200,
+						"times": 2,
+						"sleep": 500,
+						"output": "22025"
+					},
+					{
+						"status": 200,
+						"times": 2,
+						"sleep": 500,
+						"output": "22050"
+					},
+					{
+						"status": 200,
+						"times": 2,
+						"sleep": 500,
+						"output": "22075"
+					},
+					{
+						"status": 200,
+						"times": 1,
+						"sleep": 500,
+						"output": "22100"
+					},
+					{
+						"status": 200,
+						"times": 1,
+						"sleep": 500,
+						"output": "0"
+					}
+				]
+			}
+		}
+	]
+}

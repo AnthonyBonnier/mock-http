@@ -9,7 +9,7 @@
 						"status": 200, // 200 by default
 						"times": 5, // 1 by default
 						"sleep": 500, // minimum time to respond : 100ms by default
-						"output": "user1", // chosen output
+						"output": "user1" // chosen output
 					}, {
 						"status": 404,
 						"times": 1, // < 1 means forever at the end of previous responses (sorted mode only)
@@ -26,29 +26,54 @@
 				"content-type": "json/application",
 				"responses": [{
 						"status": 200,
-						"case": [{ // Tabs of conditions to match
-								"title": ["admin"],
-								"date" : ["2017-01-01", "2017-01-02"]
+						"cases": [{ // Tabs of conditions to match
+								"title": ["admin"], // matched values for the param "title"
+								"date" : ["2017-01-01", "2017-01-02"] // matched values for the param "date"
 							}
 						],
 						"sleep": 200,
-						"output": "Admin Profil",
+						"output": "Admin Profil"
 					}, {
 						"status": 200,
-						"case": [{
+						"cases": [{
 								"title": ["profile1", "profile2"]
-							},
+							}
 						],
 						"sleep": 200,
-						"output": "Profile found #title#", // write given param
+						"output": "Profile found #title#" // write given param
 					}, {
 						"status": 404, 
 						"default": true, // means other cases when none match
 						"sleep": 200,
-						"output": "Profile not found!",
+						"output": "Profile not found!"
 					}
 				]
 			}
+		}, {
+		    "repeat": true,
+            "input": "/rest/service/software?module=#module#",
+            "output": {
+                "mode": "file",
+                "content-type": "raw",
+                "responses": [
+                  {
+                      "status": 200,
+                      "sleep": 200,
+                      "cases": [
+                        {
+                          "module": ["cpu"]
+                        }
+                      ],
+                      "output": "/dir/config/versions.conf" // absolute path to the virtual file system, return the file content
+                  },
+                  {
+                      "status": 404,
+                      "sleep": 200,
+                      // No cases means default case for this input (otherwise it's the default service route)
+                      "output": "/dir/default/error.txt" // raw text works too if the output doesnt contain "/"
+                  }
+                ]
+            }
 		}
 	]
 }
