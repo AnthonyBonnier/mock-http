@@ -3,8 +3,10 @@ package org.abonnier.mock.http.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.abonnier.mock.http.domain.JsonFile;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Configuration;
@@ -23,11 +25,21 @@ import java.nio.file.Paths;
 @Configuration
 public class JsonConfig {
 
-    @PostConstruct
-    public JsonFile initConfig() throws URISyntaxException, IOException {
-         final StringBuilder strBld = new StringBuilder();
+    @Value("mock.config.file.name:mock-http.json")
+    private String defaultConfigName;
 
-        Files.lines(Paths.get(ClassLoader.getSystemResource("mock-http-test.json").toURI())).forEach(strBld::append);
+    @PostConstruct
+    public JsonFile initConfig(final String fileName) throws URISyntaxException, IOException {
+        final StringBuilder strBld = new StringBuilder();
+
+        String jsonConfigFileName;
+        if (StringUtils.isBlank(fileName)) {
+            jsonConfigFileName = defaultConfigName;
+        } else {
+            jsonConfigFileName = fileName;
+        }
+
+        Files.lines(Paths.get(ClassLoader.getSystemResource(jsonConfigFileName).toURI())).forEach(strBld::append);
 
         final String jsonConfig = strBld.toString();
 

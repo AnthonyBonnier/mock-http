@@ -1,7 +1,7 @@
 {
 	"mock-http": [{
 			"repeat": true,
-			"input": "/test/service",
+			"input": "/test/service1",
 			"output": {
 				"mode": "SORTED",
 				"content-type": "text/html",

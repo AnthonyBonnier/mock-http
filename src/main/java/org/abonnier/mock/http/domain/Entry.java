@@ -1,11 +1,11 @@
 package org.abonnier.mock.http.domain;
 
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * Created by abonnier on 09/03/2017.
  */
-@Data
+@Getter
 public class Entry {
 
     private boolean repeat;

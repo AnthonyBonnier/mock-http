@@ -3,7 +3,7 @@
 			"repeat": true,
 			"input": "/rest/service/user",
 			"output": {
-				"mode": "sorted", // or random, sorted by default
+				"mode": "SORTED", // or RANDOM, SORTED by default
 				"content-type": "text/html", // text/html by default
 				"responses": [{
 						"status": 200, // 200 by default
@@ -22,7 +22,7 @@
 			"repeat": false,
 			"input": "/rest/service/profile?title=#title#&date=#date#", // url params only in switch mode
 			"output": {
-				"mode": "switch", //repeat = false by default
+				"mode": "SWITCH", //repeat = false by default
 				"content-type": "json/application",
 				"responses": [{
 						"status": 200,
@@ -53,7 +53,7 @@
 		    "repeat": true,
             "input": "/rest/service/software?module=#module#",
             "output": {
-                "mode": "file",
+                "mode": "FILE",
                 "content-type": "raw",
                 "responses": [
                   {

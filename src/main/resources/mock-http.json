@@ -3,7 +3,7 @@
 			"repeat": true,
 			"input": "/cgi-bin/cgi.elf?22000?",
 			"output": {
-				"mode": "sorted",
+				"mode": "SORTED",
 				"content-type": "text/html",
 				"responses": [{
 						"status": 200,
