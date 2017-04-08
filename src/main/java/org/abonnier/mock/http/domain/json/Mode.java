@@ -1,4 +1,4 @@
-package org.abonnier.mock.http.domain;
+package org.abonnier.mock.http.domain.json;
 
 /**
  * Created by abonnier on 09/03/2017.

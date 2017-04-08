@@ -1,18 +1,117 @@
 {
-	"mock-http": [{
-			"repeat": true,
-			"input": "/test/service1",
-			"output": {
-				"mode": "SORTED",
-				"content-type": "text/html",
-				"responses": [{
-						"status": 200,
-						"times": 1,
-						"sleep": 0,
-						"output": "OK"
-					}
-				]
-			}
-		}
-	]
+  "mock-http": [
+    {
+      "input": "/test/service1",
+      "output": {
+        "repeat": true,
+        "mode": "SORTED",
+        "content-type": "text/html",
+        "responses": [
+          {
+            "status": 200,
+            "times": 1,
+            "sleep": 0,
+            "output": "Test service1 OK"
+          }
+        ]
+      }
+    },
+    {
+      "input": "/test/service2",
+      "output": {
+        "repeat": true,
+        "mode": "SORTED",
+        "content-type": "application/json",
+        "responses": [
+          {
+            "status": 200,
+            "times": 1,
+            "sleep": 0,
+            "output": "Test service2 response 1"
+          },
+          {
+            "status": 200,
+            "times": 1,
+            "sleep": 0,
+            "output": "Test service2 response 2"
+          },
+          {
+            "status": 200,
+            "times": 1,
+            "sleep": 0,
+            "output": "Test service2 response 3"
+          }
+        ]
+      }
+    }, {
+      "input": "/test/service3",
+      "output": {
+        "repeat": false,
+        "mode": "SORTED",
+        "content-type": "text/html",
+        "responses": [
+          {
+            "status": 200,
+            "times": 1,
+            "sleep": 0,
+            "output": "Test service3 once"
+          }
+        ]
+      }
+    }, {
+      "input": "/test/service4",
+      "output": {
+        "repeat": true,
+        "mode": "SORTED",
+        "content-type": "application/json",
+        "responses": [
+          {
+            "status": 200,
+            "times": 1,
+            "sleep": 0,
+            "output": "Test service4 response 1 once"
+          },
+          {
+            "status": 200,
+            "times": 2,
+            "sleep": 0,
+            "output": "Test service4 response 2 twice"
+          },
+          {
+            "status": 200,
+            "times": 3,
+            "sleep": 0,
+            "output": "Test service4 response 3 three times"
+          }
+        ]
+      }
+    }, {
+      "input": "/test/service5",
+      "output": {
+        "repeat": false,
+        "mode": "RANDOM",
+        "content-type": "application/json",
+        "responses": [
+          {
+            "status": 200,
+            "times": 5,
+            "sleep": 0,
+            "output": "Test service5 response 1 - 5 times"
+          },
+          {
+            "status": 200,
+            "times": 7,
+            "sleep": 0,
+            "output": "Test service5 response 2 - 7 times"
+          },
+          {
+            "status": 200,
+            "times": 9,
+            "sleep": 0,
+            "output": "Test service5 response 3 - 9 times"
+          }
+        ]
+      }
+    }
+  ]
 }

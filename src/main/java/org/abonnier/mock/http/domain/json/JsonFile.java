@@ -1,8 +1,6 @@
-package org.abonnier.mock.http.domain;
+package org.abonnier.mock.http.domain.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import lombok.Data;
 import lombok.Getter;
 
 import java.util.List;

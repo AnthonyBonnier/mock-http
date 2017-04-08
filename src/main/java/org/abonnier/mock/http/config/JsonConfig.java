@@ -1,45 +1,37 @@
 package org.abonnier.mock.http.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.abonnier.mock.http.domain.JsonFile;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.abonnier.mock.http.domain.json.JsonFile;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
+ * JSON file configuration.
  * Created by ABONNIER on 06/03/2017.
  */
 @Configuration
 public class JsonConfig {
 
-    @Value("mock.config.file.name:mock-http.json")
+    @Value("${mock.config.file.name:mock-http.json}")
     private String defaultConfigName;
 
-    @PostConstruct
-    public JsonFile initConfig(final String fileName) throws URISyntaxException, IOException {
+    /**
+     * Loads the JSON file configuration and make a usable bean.
+     * @return a JsonFile bean.
+     * @throws URISyntaxException when the json file URI is invalid
+     * @throws IOException when the json file cannot be read
+     */
+    @Bean
+    public JsonFile initConfig() throws URISyntaxException, IOException {
         final StringBuilder strBld = new StringBuilder();
 
-        String jsonConfigFileName;
-        if (StringUtils.isBlank(fileName)) {
-            jsonConfigFileName = defaultConfigName;
-        } else {
-            jsonConfigFileName = fileName;
-        }
-
-        Files.lines(Paths.get(ClassLoader.getSystemResource(jsonConfigFileName).toURI())).forEach(strBld::append);
+        Files.lines(Paths.get(ClassLoader.getSystemResource(defaultConfigName).toURI())).forEach(strBld::append);
 
         final String jsonConfig = strBld.toString();
 

@@ -1,4 +1,4 @@
-package org.abonnier.mock.http.domain;
+package org.abonnier.mock.http.domain.json;
 
 import lombok.Data;
 import lombok.Getter;
@@ -16,4 +16,11 @@ public class Response {
     private long sleep;
 
     private String output;
+
+    /**
+     * @return true if this Response has a sleep value > 0
+     */
+    public boolean hasSleep() {
+        return sleep > 0;
+    }
 }

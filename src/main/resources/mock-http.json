@@ -1,8 +1,8 @@
 {
 	"mock-http": [{
-			"repeat": true,
 			"input": "/cgi-bin/cgi.elf?22000?",
 			"output": {
+				"repeat": true,
 				"mode": "SORTED",
 				"content-type": "text/html",
 				"responses": [{

@@ -1,9 +1,16 @@
 package org.abonnier.mock.http.config;
 
-import org.abonnier.mock.http.domain.*;
+import org.abonnier.mock.http.domain.json.Entry;
+import org.abonnier.mock.http.domain.json.JsonFile;
+import org.abonnier.mock.http.domain.json.Mode;
+import org.abonnier.mock.http.domain.json.Output;
+import org.abonnier.mock.http.domain.json.Response;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.Field;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -19,17 +26,22 @@ public class JsonConfigTest {
     @Test
     public void testInitConfig() throws Exception {
 
-        final JsonFile jsonFile = (new JsonConfig()).initConfig("mock-http-test.json");
+        Field defaultConfigNameField = ReflectionUtils.findField(JsonConfig.class, "defaultConfigName");
+        ReflectionUtils.makeAccessible(defaultConfigNameField);
+        final JsonConfig jsonConfig = new JsonConfig();
+        ReflectionUtils.setField(defaultConfigNameField, jsonConfig, "mock-http-test.json");
+
+        final JsonFile jsonFile = jsonConfig.initConfig();
         assertNotNull(jsonFile);
         assertTrue(!jsonFile.getEntries().isEmpty());
 
         final Entry entry1 = jsonFile.getEntries().get(0);
         assertNotNull(entry1);
-        assertTrue(entry1.isRepeat());
         assertEquals("/test/service1", entry1.getInput());
 
         final Output output = entry1.getOutput();
         assertNotNull(output);
+        assertTrue(output.isRepeat());
         assertEquals(Mode.SORTED, output.getMode());
         assertEquals("text/html", output.getContentType());
         assertEquals(1, output.getResponses().size());
@@ -38,6 +50,6 @@ public class JsonConfigTest {
         assertEquals(200, response.getStatus());
         assertEquals(1, response.getTimes());
         assertEquals(0, response.getSleep());
-        assertEquals("OK", response.getOutput());
+        assertEquals("Test service1 OK", response.getOutput());
     }
 }
