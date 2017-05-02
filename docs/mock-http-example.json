@@ -19,7 +19,7 @@
 				]
 			}
 		}, {
-			"input": "/rest/service/profile?title=#title#&date=#date#", // url params only in switch mode
+			"input": "/rest/service/profile?title=${title}&date=${date}", // url params only in switch mode
 			"output": {
 				"repeat": false,
 				"mode": "SWITCH", //repeat = false by default
@@ -36,7 +36,7 @@
 					}, {
 						"status": 200,
 						"cases": [{
-								"title": ["profile1", "profile2"]
+								"title": ["operator", "supervisor"]
 							}
 						],
 						"sleep": 200,
