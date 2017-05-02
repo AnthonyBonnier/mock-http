@@ -1,14 +1,17 @@
 package org.abonnier.mock.http.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import org.abonnier.mock.http.domain.json.JsonFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -18,8 +21,17 @@ import java.nio.file.Paths;
 @Configuration
 public class JsonConfig {
 
+    @Getter
     @Value("${mock.config.file.name:mock-http.json}")
     private String defaultConfigName;
+
+    /**
+     * @return the Path of the JSON config File
+     * @throws URISyntaxException when exceptions are thrown by the toURI
+     */
+    public Path getJsonFilePath() throws URISyntaxException {
+        return Paths.get(ClassLoader.getSystemResource(defaultConfigName).toURI());
+    }
 
     /**
      * Loads the JSON file configuration and make a usable bean.
@@ -28,14 +40,21 @@ public class JsonConfig {
      * @throws IOException when the json file cannot be read
      */
     @Bean
+    @Scope("prototype")
     public JsonFile initConfig() throws URISyntaxException, IOException {
-        final StringBuilder strBld = new StringBuilder();
+        final Path jsonConfigPath = getJsonFilePath();
+        if (jsonConfigPath.toFile().exists()) {
 
-        Files.lines(Paths.get(ClassLoader.getSystemResource(defaultConfigName).toURI())).forEach(strBld::append);
+            final StringBuilder strBld = new StringBuilder();
 
-        final String jsonConfig = strBld.toString();
+            Files.lines(jsonConfigPath).forEach(strBld::append);
 
-        final ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(jsonConfig, JsonFile.class);
+            final String jsonConfig = strBld.toString();
+
+            final ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(jsonConfig, JsonFile.class);
+        } else {
+            return new JsonFile();
+        }
     }
 }

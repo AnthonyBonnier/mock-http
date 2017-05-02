@@ -30,6 +30,14 @@ public class RouteHandler {
      * @param jf JSON File to parse.
      */
     public RouteHandler(final JsonFile jf) {
+        updateRoutes(jf);
+    }
+
+    /**
+     * Update the routes from the json file.
+     * @param jf containing the config.
+     */
+    public synchronized void updateRoutes(final JsonFile jf) {
         entriesMap = jf.getEntries().parallelStream().collect(Collectors.toMap(Entry::getInput, Function.identity()));
     }
 
@@ -41,7 +49,7 @@ public class RouteHandler {
      * @return a ResponseEntity generated from the JSON configuration file or a 400 Bad request if the input is
      * unknown or the mock entry does not deliver response anymore (repeat false).
      */
-    public ResponseEntity<String> get(final String input, long start) throws InterruptedException {
+    public synchronized ResponseEntity<String> get(final String input, long start) throws InterruptedException {
         long sleep = 0;
 
         // Default response

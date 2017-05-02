@@ -1,6 +1,5 @@
 package org.abonnier.mock.http.service;
 
-import lombok.extern.log4j.Log4j2;
 import org.abonnier.mock.http.business.RouteHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
