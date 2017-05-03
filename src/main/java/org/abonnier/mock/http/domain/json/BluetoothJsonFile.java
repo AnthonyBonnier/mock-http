@@ -6,11 +6,11 @@ import lombok.Getter;
 import java.util.List;
 
 /**
- * Created by abonnier on 09/03/2017.
+ * Json File of the Bluetooth Mock.
+ * Created by Anthony on 03/05/2017.
  */
 @Getter
-public class JsonFile {
-
-    @JsonProperty(value = "mock-http")
+public class BluetoothJsonFile {
+    @JsonProperty(value = "mock-bluetooth")
     private List<Entry> entries;
 }

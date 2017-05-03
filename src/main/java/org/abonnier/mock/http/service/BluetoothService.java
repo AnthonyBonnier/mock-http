@@ -3,6 +3,8 @@ package org.abonnier.mock.http.service;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.abonnier.mock.http.business.BluetoothHandler;
+import org.abonnier.mock.http.domain.json.BluetoothJsonFile;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -13,6 +15,8 @@ import javax.bluetooth.UUID;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnectionNotifier;
 import java.io.IOException;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Start the Bluetooth service.
@@ -29,10 +33,18 @@ public class BluetoothService {
 
     private String connURL = null;
 
+    private BluetoothJsonFile jsonFile;
+
+    @Getter
+    private final Queue<String> bluetoothQueue = new ArrayBlockingQueue<String>(10);
+
     @Getter
     private StreamConnectionNotifier scn = null;
 
-    public BluetoothService() throws IOException {
+    @Autowired
+    public BluetoothService(final BluetoothJsonFile jf) throws IOException {
+        jsonFile = jf;
+
         // Service identifier
         final UUID MYSERVICEUUID_UUID = new UUID(myServiceUUID, false);
 
@@ -51,7 +63,7 @@ public class BluetoothService {
         log.info("Starting bluetooth service at {}", connURL);
 
         // Start the bluetooth handler thread
-        final Thread bluetoothThread = new Thread(new BluetoothHandler(this));
+        final Thread bluetoothThread = new Thread(new BluetoothHandler(this, jsonFile));
         bluetoothThread.start();
     }
 

@@ -1,8 +1,11 @@
 package org.abonnier.mock.http.business;
 
+import lombok.extern.slf4j.Slf4j;
 import org.abonnier.mock.http.domain.json.Entry;
-import org.abonnier.mock.http.domain.json.JsonFile;
+import org.abonnier.mock.http.domain.json.HttpJsonFile;
 import org.abonnier.mock.http.domain.json.Response;
+import org.abonnier.mock.http.service.BluetoothService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,17 +22,21 @@ import java.util.stream.Collectors;
  * Route Handler is in charge of delivering a mock response from the given JSON configuration file.
  * Created by Anthony on 29/03/2017.
  */
+@Slf4j
 @Component
 public class RouteHandler {
 
     private Map<String, Entry> entriesMap = new HashMap<>();
+
+    private BluetoothService bluetoothService;
 
     /**
      * Construct a Route Handler for a JSON configuration file.
      *
      * @param jf JSON File to parse.
      */
-    public RouteHandler(final JsonFile jf) {
+    public RouteHandler(final HttpJsonFile jf, final BluetoothService bthSrv) {
+        bluetoothService = bthSrv;
         updateRoutes(jf);
     }
 
@@ -37,7 +44,7 @@ public class RouteHandler {
      * Update the routes from the json file.
      * @param jf containing the config.
      */
-    public synchronized void updateRoutes(final JsonFile jf) {
+    public synchronized void updateRoutes(final HttpJsonFile jf) {
         entriesMap = jf.getEntries().parallelStream().collect(Collectors.toMap(Entry::getInput, Function.identity()));
     }
 
@@ -62,18 +69,67 @@ public class RouteHandler {
         if (entry != null) {
             final Response response = entry.getOutput().getNextResponse();
 
-            // Can be null if repeat = false
-            if (response != null) {
+            switch (entry.getOutput().getMode()) {
+                // Bluetooth mode not implemented on GET
+                case BLUETOOTH:
+                    log.warn("Mode BLUETOOTH not implemented for GET method.");
+                    break;
 
-                if (response.hasSleep()) {
-                    sleep = response.getSleep();
-                }
+                // Other output modes
+                default:
+                    // Can be null if repeat = false
+                    if (response != null) {
 
-                // Headers
-                final MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-                headers.add(HttpHeaders.CONTENT_TYPE, entry.getOutput().getContentType());
-                // Response building
-                responseEntity = new ResponseEntity(response.getOutput(), headers, HttpStatus.valueOf(response.getStatus()));
+                        if (response.hasSleep()) {
+                            sleep = response.getSleep();
+                        }
+
+                        // Headers
+                        final MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+                        headers.add(HttpHeaders.CONTENT_TYPE, entry.getOutput().getContentType());
+                        // Response building
+                        responseEntity = new ResponseEntity(response.getOutput(), headers, HttpStatus.valueOf(response.getStatus()));
+                    }
+            }
+        }
+
+        // Sleep management
+        if (start > 0 && sleep > 0) {
+            // The delta is the time the previous instructions take to be executed
+            long delta = System.currentTimeMillis() - start;
+
+            // Only if the delta is lesser than the response sleep, otherwise, the response is returned immediately
+            if (delta < sleep) {
+                sleep -= delta;
+                // Sleep during the found response sleep minus the delta time of the previous instructions
+                Thread.sleep(sleep);
+            }
+        }
+
+        return responseEntity;
+    }
+
+    public synchronized ResponseEntity<String> post(final String input, final long start, final String body) throws InterruptedException {
+        long sleep = 0;
+
+        // Default response
+        ResponseEntity<String> responseEntity = new ResponseEntity(input, HttpStatus.BAD_REQUEST);
+
+        // Retrieving entry from the given input
+        final Entry entry = entriesMap.get(input);
+
+        // Can be null if input did not match
+        if (entry != null && StringUtils.isNotBlank(body)) {
+            final Response response = entry.getOutput().getNextResponse();
+
+            switch (entry.getOutput().getMode()) {
+                // Bluetooth mode, sending something to the client
+                case BLUETOOTH:
+                    bluetoothService.getBluetoothQueue().add(response.getOutput());
+                    break;
+                // Other modes don't handle POST
+                default:
+                    log.warn("Other modes than BLUETOOTH don't implement POST method.");
             }
         }
 

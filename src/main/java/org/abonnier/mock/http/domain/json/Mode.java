@@ -6,5 +6,6 @@ package org.abonnier.mock.http.domain.json;
 public enum Mode {
     SORTED,
     RANDOM,
-    SWITCH
+    SWITCH,
+    BLUETOOTH
 }

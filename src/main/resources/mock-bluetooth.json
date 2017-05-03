@@ -1,0 +1,16 @@
+{
+	"mock-bluetooth": [{
+			"input": "Ping",
+			"output": {
+				"repeat": true,
+				"mode": "SORTED",
+				"responses": [{
+						"times": 1,
+						"sleep": 500,
+						"output": "Pong"
+					}
+				]
+			}
+		}
+	]
+}

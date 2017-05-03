@@ -1,7 +1,7 @@
 package org.abonnier.mock.http.business;
 
 import org.abonnier.mock.http.config.JsonConfig;
-import org.abonnier.mock.http.domain.json.JsonFile;
+import org.abonnier.mock.http.domain.json.HttpJsonFile;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,9 +43,9 @@ public class RouteHandlerTest {
         final JsonConfig jsonConfig = new JsonConfig();
         ReflectionUtils.setField(defaultConfigNameField, jsonConfig, "mock-http-test.json");
 
-        final JsonFile jsonFile = jsonConfig.initConfig();
+        final HttpJsonFile httpJsonFile = jsonConfig.httpMockConfig();
 
-        routeHandler = new RouteHandler(jsonFile);
+        routeHandler = new RouteHandler(httpJsonFile);
     }
 
     @Test

@@ -3,7 +3,7 @@ package org.abonnier.mock.http.service;
 import lombok.extern.slf4j.Slf4j;
 import org.abonnier.mock.http.business.RouteHandler;
 import org.abonnier.mock.http.config.JsonConfig;
-import org.abonnier.mock.http.domain.json.JsonFile;
+import org.abonnier.mock.http.domain.json.HttpJsonFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -15,8 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
@@ -68,7 +66,7 @@ public class JsonConfigWatcher {
         routeHandler = rHdlr;
         watcher = FileSystems.getDefault().newWatchService();
 
-        final Path watchedDir = jsCfg.getJsonFilePath().getParent();
+        final Path watchedDir = jsCfg.getHttpMockJsonFilePath().getParent();
         watchedDir.register(watcher, ENTRY_CREATE, ENTRY_MODIFY);
 
         log.info("Registered directory: {}", watchedDir);
@@ -102,13 +100,13 @@ public class JsonConfigWatcher {
 
             // Handle events (last update > schedule rate && file name is json config && event is create or modify)
             if (now - lastUpdate >= SCHEDULE_RATE &&
-                    jsonConfig.getDefaultConfigName().equals(fileName.toString()) &&
+                    jsonConfig.getHttpMockConfigFileName().equals(fileName.toString()) &&
                     (kind == ENTRY_CREATE || kind == ENTRY_MODIFY)) {
                 log.info("JsonConfigWatcher handling {} {} {}", kind.name(), "on", fileName);
 
                 try {
                     // Update the json file
-                    final JsonFile jf = jsonConfig.initConfig();
+                    final HttpJsonFile jf = jsonConfig.httpMockConfig();
                     // Update the routes
                     routeHandler.updateRoutes(jf);
                     // Store last update

@@ -1,7 +1,7 @@
 package org.abonnier.mock.http.config;
 
 import org.abonnier.mock.http.domain.json.Entry;
-import org.abonnier.mock.http.domain.json.JsonFile;
+import org.abonnier.mock.http.domain.json.HttpJsonFile;
 import org.abonnier.mock.http.domain.json.Mode;
 import org.abonnier.mock.http.domain.json.Output;
 import org.abonnier.mock.http.domain.json.Response;
@@ -31,11 +31,11 @@ public class JsonConfigTest {
         final JsonConfig jsonConfig = new JsonConfig();
         ReflectionUtils.setField(defaultConfigNameField, jsonConfig, "mock-http-test.json");
 
-        final JsonFile jsonFile = jsonConfig.initConfig();
-        assertNotNull(jsonFile);
-        assertTrue(!jsonFile.getEntries().isEmpty());
+        final HttpJsonFile httpJsonFile = jsonConfig.httpMockConfig();
+        assertNotNull(httpJsonFile);
+        assertTrue(!httpJsonFile.getEntries().isEmpty());
 
-        final Entry entry1 = jsonFile.getEntries().get(0);
+        final Entry entry1 = httpJsonFile.getEntries().get(0);
         assertNotNull(entry1);
         assertEquals("/test/service1", entry1.getInput());
 

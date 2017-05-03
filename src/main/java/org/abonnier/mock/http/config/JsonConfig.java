@@ -2,7 +2,8 @@ package org.abonnier.mock.http.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
-import org.abonnier.mock.http.domain.json.JsonFile;
+import org.abonnier.mock.http.domain.json.BluetoothJsonFile;
+import org.abonnier.mock.http.domain.json.HttpJsonFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,39 +23,76 @@ import java.nio.file.Paths;
 public class JsonConfig {
 
     @Getter
-    @Value("${mock.config.file.name:mock-http.json}")
-    private String defaultConfigName;
+    @Value("${http.mock.config.file.name:mock-http.json}")
+    private String httpMockConfigFileName;
+
+    @Getter
+    @Value("${bluetooth.mock.config.file.name:mock-bluetooth.json}")
+    private String bluetoothMockConfigFileName;
 
     /**
-     * @return the Path of the JSON config File
+     * @return the Path of the JSON config File of the http Mock
      * @throws URISyntaxException when exceptions are thrown by the toURI
      */
-    public Path getJsonFilePath() throws URISyntaxException {
-        return Paths.get(ClassLoader.getSystemResource(defaultConfigName).toURI());
+    public Path getHttpMockJsonFilePath() throws URISyntaxException {
+        return Paths.get(ClassLoader.getSystemResource(httpMockConfigFileName).toURI());
     }
 
     /**
-     * Loads the JSON file configuration and make a usable bean.
-     * @return a JsonFile bean.
+     * @return the Path of the JSON config File of the bluetooth Mock
+     * @throws URISyntaxException when exceptions are thrown by the toURI
+     */
+    public Path getBluetoothMockJsonFilePath() throws URISyntaxException {
+        return Paths.get(ClassLoader.getSystemResource(bluetoothMockConfigFileName).toURI());
+    }
+
+    /**
+     * Loads the JSON file configuration for http Mock and make a usable bean.
+     * @return a HttpJsonFile bean.
      * @throws URISyntaxException when the json file URI is invalid
      * @throws IOException when the json file cannot be read
      */
     @Bean
     @Scope("prototype")
-    public JsonFile initConfig() throws URISyntaxException, IOException {
-        final Path jsonConfigPath = getJsonFilePath();
-        if (jsonConfigPath.toFile().exists()) {
+    public HttpJsonFile httpMockConfig() throws URISyntaxException, IOException {
+        final Path httpConfigPath = getHttpMockJsonFilePath();
+        if (httpConfigPath.toFile().exists()) {
 
             final StringBuilder strBld = new StringBuilder();
 
-            Files.lines(jsonConfigPath).forEach(strBld::append);
+            Files.lines(httpConfigPath).forEach(strBld::append);
 
-            final String jsonConfig = strBld.toString();
+            final String httpConfig = strBld.toString();
 
             final ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(jsonConfig, JsonFile.class);
+            return mapper.readValue(httpConfig, HttpJsonFile.class);
         } else {
-            return new JsonFile();
+            return new HttpJsonFile();
+        }
+    }
+
+    /**
+     * Loads the JSON file configuration for Bluetooth Mock and make a usable bean.
+     * @return a HttpJsonFile bean.
+     * @throws URISyntaxException when the json file URI is invalid
+     * @throws IOException when the json file cannot be read
+     */
+    @Bean
+    @Scope("prototype")
+    public BluetoothJsonFile bluetoothMockConfig() throws URISyntaxException, IOException {
+        final Path bthConfigPath = getBluetoothMockJsonFilePath();
+        if (bthConfigPath.toFile().exists()) {
+
+            final StringBuilder strBld = new StringBuilder();
+
+            Files.lines(bthConfigPath).forEach(strBld::append);
+
+            final String bthConfig = strBld.toString();
+
+            final ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(bthConfig, BluetoothJsonFile.class);
+        } else {
+            return new BluetoothJsonFile();
         }
     }
 }
